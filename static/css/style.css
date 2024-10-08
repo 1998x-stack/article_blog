@@ -1,0 +1,130 @@
+/* static/css/style.css (Apple Style Simplified Design with Improvements) */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fafafa;
+    color: #1c1c1e;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: #ffffff;
+    color: #1c1c1e;
+    padding: 1rem 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.logo {
+    font-weight: 600;
+    font-size: 1.5rem;
+    color: #1c1c1e;
+}
+
+.view-toggle .button {
+    color: #007aff;
+    background-color: transparent;
+    padding: 10px 15px;
+    margin: 5px;
+    text-decoration: none;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #007aff;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.view-toggle .button:hover {
+    background-color: #007aff;
+    color: #ffffff;
+}
+
+.article-container.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.article-container.list {
+    display: block;
+    padding: 20px;
+}
+
+.article {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s ease;
+}
+
+.article:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.article-title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: #1c1c1e;
+}
+
+.article-content {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    color: #3a3a3c;
+}
+
+.article-tags {
+    font-size: 0.9rem;
+    color: #8e8e93;
+}
+
+.pagination {
+    text-align: center;
+    margin: 30px;
+    margin-bottom: fixed;
+}
+
+.pagination a {
+    text-decoration: none;
+    padding: 10px 15px;
+    margin: 5px;
+    color: #007aff;
+    border: 1px solid #007aff;
+    border-radius: 8px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.pagination a:hover {
+    background-color: #007aff;
+    color: #ffffff;
+}
+
+.pagination a.disabled {
+    color: #c7c7cc;
+    border-color: #c7c7cc;
+    pointer-events: none;
+}
+
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 1rem;
+    margin-top: auto;
+    position: relative;
+    width: 100%;
+}
