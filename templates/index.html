@@ -7,7 +7,7 @@
       <form class="search-form" method="get" action="{{ url_for('public.search') }}">
         <input type="search" name="q" placeholder="Search…" aria-label="Search">
       </form>
-      <a href="{{ url_for('admin.dashboard') }}">Admin</a>
+      {% if is_admin() %}<a href="{{ url_for('admin.dashboard') }}">Admin</a>{% endif %}
     </div>
   </header>
 

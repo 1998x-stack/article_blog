@@ -14,7 +14,9 @@ bp = Blueprint("auth", __name__)
 def register_auth_extensions(app):
     @app.context_processor
     def inject_csrf():
-        return {"csrf_token": generate_csrf_token}
+        def is_admin():
+            return bool(session.get("admin_id"))
+        return {"csrf_token": generate_csrf_token, "is_admin": is_admin}
 
     username = app.config.get("ADMIN_USERNAME", cfg.ADMIN_USERNAME)
     password = app.config.get("ADMIN_PASSWORD") or cfg.ADMIN_PASSWORD
