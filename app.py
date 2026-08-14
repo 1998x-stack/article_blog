@@ -23,6 +23,7 @@ def create_app(config_overrides=None):
     from errors import register_error_handlers
     register_auth_extensions(app)
     register_error_handlers(app)
+    app.register_blueprint(auth_bp)
 
     from blueprints.public import bp as public_bp
     from blueprints.comments import bp as comments_bp
