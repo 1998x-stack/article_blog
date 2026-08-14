@@ -1,4 +1,5 @@
 Flask>=3.0
 Markdown>=3.5
 bleach>=6.0
+python-dotenv>=1.0
 pytest>=8.0
