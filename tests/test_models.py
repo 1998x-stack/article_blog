@@ -15,8 +15,8 @@ def db_path(app):
 
 
 def test_user(db_path):
-    uid = create_user("admin", "hash123", db_path=db_path)
-    row = get_user_by_username("admin", db_path=db_path)
+    uid = create_user("tester", "hash123", db_path=db_path)
+    row = get_user_by_username("tester", db_path=db_path)
     assert row["id"] == uid
     assert row["password_hash"] == "hash123"
 
