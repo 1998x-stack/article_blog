@@ -90,6 +90,27 @@ def init_schema(db_path):
         con.executescript(_SCHEMA)
 
 
+def reset_and_seed(db_path):
+    from models import create_article
+    with sqlite3.connect(db_path) as con:
+        con.execute("PRAGMA foreign_keys = ON")
+        con.executescript(
+            "DROP TABLE IF EXISTS articles_fts;"
+            "DROP TABLE IF EXISTS article_tags;"
+            "DROP TABLE IF EXISTS comments;"
+            "DROP TABLE IF EXISTS tags;"
+            "DROP TABLE IF EXISTS articles;"
+            "DROP TABLE IF EXISTS users;"
+        )
+    init_schema(db_path)
+    create_article("First Article", "first-article",
+                   "Welcome to the blog. Posts about **Python** and **Flask**.",
+                   "Introductory post", ["python", "flask"], db_path=db_path)
+    create_article("Second Article", "second-article",
+                   "Notes on building clean, fast websites with SQLite.",
+                   "A technical post", ["web", "development"], db_path=db_path)
+
+
 def _db_path():
     from flask import current_app
     return current_app.config["DATABASE"]
