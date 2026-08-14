@@ -1,35 +1,42 @@
-<!-- templates/article.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>{{ article[1] }} - Article Blog</title>
-</head>
-<body>
-    <header>
-        <nav class="navbar">
-            <div class="container">
-                <h1 class="logo"><a href="/">Article Blog</a></h1>
-            </div>
-        </nav>
-    </header>
-    <main>
-        <div class="container">
-            <div class="article-detail">
-                <h2 class="article-title">{{ article[1] }}</h2>
-                <p class="article-content">{{ article[2] }}</p>
-                <p class="article-tags"><strong>Tags:</strong> {{ article[3] }}</p>
-            </div>
-        </div>
-    </main>
-    <footer>
-        <div class="container">
-            <p>&copy; 2023 Article Blog. All Rights Reserved.</p>
-        </div>
-    </footer>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}{{ article['title'] }}{% endblock %}
+{% block content %}
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="{{ url_for('public.index') }}">Article Blog</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <article class="article-detail">
+      <h1 class="article-title">{{ article['title'] }}</h1>
+      <p class="article-meta">Published {{ article['created_at'] }}</p>
+      <div class="markdown-body">
+        {{ rendered | safe }}
+      </div>
+      <nav class="tag-chips">
+        {% for t in tags %}
+          <a class="tag-chip" href="{{ url_for('public.tag', name=t) }}">{{ t }}</a>
+        {% endfor %}
+      </nav>
+    </article>
+
+    <section class="comments">
+      <h2>Comments ({{ comments|length }})</h2>
+      <ul class="comment-list">
+        {% for c in comments %}
+          <li class="comment"><strong>{{ c['author'] }}</strong> — {{ c['content'] }}</li>
+        {% else %}
+          <li>No comments yet.</li>
+        {% endfor %}
+      </ul>
+
+      <form class="comment-form" method="post" action="{{ url_for('comments.post_comment', slug=article['slug']) }}">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+        <label>Name<input type="text" name="author" required></label>
+        <label>Comment<textarea name="content" required></textarea></label>
+        <button type="submit">Post comment</button>
+      </form>
+    </section>
+  </main>
+{% endblock %}

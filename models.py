@@ -1,5 +1,6 @@
 import sqlite3
 from flask import g
+from render import render_markdown  # noqa: F401  (re-exported for public routes)
 
 
 def _conn(db_path):
