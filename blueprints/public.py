@@ -16,9 +16,12 @@ def index():
     articles = models.list_articles(per, offset)
     total = models.count_articles()
     total_pages = max(1, -(-total // per))
+    lead_tags = []
+    if page == 1 and articles:
+        lead_tags = models.get_tags_for_article(articles[0]["id"])
     return render_template("index.html", articles=articles, view_type=view_type,
                            page=page, total=total, total_pages=total_pages,
-                           tags=models.list_tags())
+                           tags=models.list_tags(), lead_tags=lead_tags)
 
 
 @bp.route("/article/<slug>")

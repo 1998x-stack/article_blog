@@ -96,7 +96,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 /* ---------- Site header ---------- */
 .site-header {
-  background: linear-gradient(180deg, var(--bg-2) 0%, color-mix(in srgb, var(--bg) 88%, transparent) 120%);
+  background: linear-gradient(180deg, var(--bg-2) 0%, #171c14 130%);
   border-bottom: 1px solid var(--line);
   position: sticky;
   top: 0;
