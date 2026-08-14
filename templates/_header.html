@@ -1,0 +1,39 @@
+<!-- Shared site header: logo, search, and account icon (top-right) -->
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="logo" href="{{ url_for('public.index') }}">Article Blog</a>
+    <form class="search-form" method="get" action="{{ url_for('public.search') }}" role="search">
+      <input type="search" name="q" value="{{ q or '' }}" placeholder="Search…" aria-label="Search">
+    </form>
+
+    <nav class="header-actions" aria-label="Account">
+      {% if is_admin() %}
+        <a class="icon-link" href="{{ url_for('admin.dashboard') }}" title="Admin" aria-label="Admin">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+            <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+          </svg>
+        </a>
+        <a class="icon-link" href="{{ url_for('auth.logout') }}" title="Log out" aria-label="Log out">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+        </a>
+      {% else %}
+        <a class="icon-link" href="{{ url_for('auth.login') }}" title="Log in" aria-label="Log in">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </a>
+      {% endif %}
+    </nav>
+  </div>
+</header>

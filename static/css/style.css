@@ -141,6 +141,20 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .site-header nav a { font-family: var(--mono); font-size: var(--fs-xs); color: var(--muted); letter-spacing: .02em; }
 .site-header nav a:hover { color: var(--accent); text-decoration: none; }
 
+/* account icon (top-right) */
+.header-actions { display: flex; align-items: center; gap: 10px; }
+.icon-link {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--muted);
+  background: var(--panel);
+  transition: color .16s var(--ease), border-color .16s var(--ease), background .16s var(--ease);
+}
+.icon-link:hover { color: var(--accent); border-color: var(--accent); background: var(--panel-2); text-decoration: none; }
+.icon-link svg { width: 17px; height: 17px; }
+
 /* ---------- Main ---------- */
 main { flex: 1; margin-top: 34px; margin-bottom: 70px; }
 

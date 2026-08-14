@@ -1,9 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Tag: {{ tag }}{% endblock %}
 {% block content %}
-  <header class="site-header"><div class="container header-inner">
-    <a class="logo" href="{{ url_for('public.index') }}">Article Blog</a>
-  </div></header>
+  {% include "_header.html" %}
   <main class="container">
     <h1>Tag: {{ tag }}</h1>
     <div class="article-container grid">
