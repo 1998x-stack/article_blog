@@ -1,0 +1,26 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}Articles{% endblock %}
+{% block admin_content %}
+  <h1>Articles</h1>
+  <a class="btn" href="{{ url_for('admin.new') }}">New article</a>
+  <table class="admin-table">
+    <thead><tr><th>Title</th><th>Slug</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for a in articles %}
+        <tr>
+          <td>{{ a['title'] }}</td>
+          <td>{{ a['slug'] }}</td>
+          <td>
+            <a href="{{ url_for('admin.edit', article_id=a['id']) }}">Edit</a>
+            <form method="post" action="{{ url_for('admin.delete', article_id=a['id']) }}">
+              <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+              <button class="btn-danger" type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="3">No articles.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

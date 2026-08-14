@@ -1,0 +1,14 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}{{ 'Edit' if article else 'New' }} Article{% endblock %}
+{% block admin_content %}
+  <h1>{{ 'Edit' if article else 'New' }} Article</h1>
+  <form method="post" action="{{ url_for('admin.edit', article_id=article['id']) if article else url_for('admin.new') }}">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+    <label>Title<input type="text" name="title" value="{{ article['title'] if article else '' }}" required></label>
+    <label>Slug<input type="text" name="slug" value="{{ article['slug'] if article else '' }}" placeholder="auto from title"></label>
+    <label>Excerpt<textarea name="excerpt">{{ article['excerpt'] if article else '' }}</textarea></label>
+    <label>Content (Markdown)<textarea name="content_md" rows="12" required>{{ article['content_md'] if article else '' }}</textarea></label>
+    <label>Tags (comma-separated)<input type="text" name="tags" value="{{ form_tags }}"></label>
+    <button class="btn" type="submit">Save</button>
+  </form>
+{% endblock %}

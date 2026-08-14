@@ -1,3 +1,18 @@
-{% extends "base.html" %}
-{% block title %}Admin{% endblock %}
-{% block content %}<h1>Admin Dashboard</h1>{% endblock %}
+{% extends "admin/admin_base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block admin_content %}
+  <h1>Dashboard</h1>
+  <div class="stat-grid">
+    <div class="stat"><span class="stat-number">{{ article_count }}</span><span>Articles</span></div>
+    <div class="stat"><span class="stat-number">{{ pending }}</span><span>Pending comments</span></div>
+    <div class="stat"><span class="stat-number">{{ approved }}</span><span>Approved comments</span></div>
+  </div>
+  <h2>Recent articles</h2>
+  <ul class="recent-list">
+    {% for a in recent %}
+      <li><a href="{{ url_for('admin.edit', article_id=a['id']) }}">{{ a['title'] }}</a></li>
+    {% else %}
+      <li>No articles.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

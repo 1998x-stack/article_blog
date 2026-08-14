@@ -1,0 +1,33 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}Comments{% endblock %}
+{% block admin_content %}
+  <h1>Pending comments</h1>
+  <ul class="comment-mod-list">
+    {% for c in pending %}
+      <li>
+        <strong>{{ c['author'] }}</strong> (article {{ c['article_id'] }}): {{ c['content'] }}
+        <form method="post" action="{{ url_for('admin.comment_action', comment_id=c['id'], action='approve') }}">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"><button class="btn" type="submit">Approve</button>
+        </form>
+        <form method="post" action="{{ url_for('admin.comment_action', comment_id=c['id'], action='reject') }}">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"><button class="btn-danger" type="submit">Reject</button>
+        </form>
+      </li>
+    {% else %}
+      <li>No pending comments.</li>
+    {% endfor %}
+  </ul>
+  <h1>Approved comments</h1>
+  <ul class="comment-mod-list">
+    {% for c in approved %}
+      <li>
+        <strong>{{ c['author'] }}</strong>: {{ c['content'] }}
+        <form method="post" action="{{ url_for('admin.comment_action', comment_id=c['id'], action='delete') }}">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"><button class="btn-danger" type="submit">Delete</button>
+        </form>
+      </li>
+    {% else %}
+      <li>None yet.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+  <header class="admin-header">
+    <div class="container header-inner">
+      <a class="logo" href="{{ url_for('admin.dashboard') }}">Admin</a>
+      <nav class="admin-nav">
+        <a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('admin.articles') }}">Articles</a>
+        <a href="{{ url_for('admin.comments') }}">Comments</a>
+        <a href="{{ url_for('auth.logout') }}">Logout</a>
+      </nav>
+    </div>
+  </header>
+  <main class="container admin-body">
+    {% block admin_content %}{% endblock %}
+  </main>
+{% endblock %}
