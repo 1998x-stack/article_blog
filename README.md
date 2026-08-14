@@ -1,82 +1,160 @@
 # Article Blog
 
-A modern, secure, technically-styled blog rebuilt from scratch on **Flask + SQLite** (with FTS5 full-text search). Includes a normalized database schema, safe Markdown rendering, tag filtering, search, a cookies-session admin area, and comment moderation.
+A modern, secure, technically-styled blog built on **Flask** and **SQLite**, with
+**FTS5 full-text search**, a normalized schema, safe Markdown rendering, tag
+filtering, a protected admin area, and comment moderation.
+
+The codebase is deliberately modular (app-factory + blueprints), dependency-light,
+and fully test-driven, with a custom "field journal / code-scratch" visual identity.
+
+---
+
+## Table of Contents
+
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Configuration (.env)](#configuration-env)
+- [Running](#running)
+- [Seeding Content](#seeding-content)
+- [Managing Content](#managing-content)
+- [JSON Import](#json-import)
+- [Project Layout](#project-layout)
+- [Testing](#testing)
+- [Security](#security)
+
+---
 
 ## Features
 
-- **Articles** — create, edit, and delete from a protected admin dashboard (no more manual JSON import required, though it's kept for bulk loading).
-- **Search** — full-text search (SQLite FTS5) across titles and content.
-- **Tags** — tag chips on the homepage and dedicated tag pages.
-- **Markdown** — write in Markdown; rendered server-side and sanitized with a `bleach` allowlist (no raw, unescaped HTML).
-- **Comments** — readers can comment; new comments are held for admin **moderation** (approve / reject / delete).
-- **Grid & list views** with working pagination (page numbers, correct next/last behavior).
-- **Bold developer-oriented design** — JetBrains Mono display, warm ink palette, amber accent, responsive, accessible.
+- **Article authoring** — create, edit, and delete posts from a password-protected
+  admin dashboard.
+- **Full-text search** — SQLite **FTS5** across titles and content, with relevance
+  ranking.
+- **Tagging** — per-article tags, clickable chips, and dedicated tag pages.
+- **Safe Markdown** — write in Markdown; rendered server-side and sanitized through
+  a strict `bleach` allowlist (no raw, unescaped HTML).
+- **Comments with moderation** — readers can leave comments, which are held in a
+  pending queue until an admin approves, rejects, or deletes them.
+- **Grid & list views** with correct, page-numbered pagination.
+- **Bold design** — a distinctive "developer's notebook" aesthetic: JetBrains Mono
+  display, warm ink palette, amber accent, dot-grid grain, responsive and accessible
+  (visible focus, reduced-motion support).
 
-## Requirements
+## Tech Stack
 
-- Python 3.9+
-- Dependencies installed via pip (see below)
+- **Python 3.9+**
+- **Flask** (app-factory + blueprints)
+- **SQLite** via the standard `sqlite3` module, with **FTS5** full-text search
+- **python-dotenv** for configuration
+- **Markdown** + **bleach** for safe rendering
+- **pytest** for testing
 
-## Installation
+No ORM, no front-end build step, and no heavyweight framework — raw, explicit SQL
+keeps behavior transparent.
+
+---
+
+## Getting Started
+
+**Requirements:** Python 3.9+
 
 ```bash
+# 1. Create and activate a virtual environment
 python3 -m venv .venv
 source .venv/bin/activate
+
+# 2. Install dependencies
 pip install -r requirements.txt
 ```
 
-## Configuration (environment variables)
+## Configuration (.env)
+
+Copy the example configuration into a local `.env` (git-ignored):
+
+```bash
+cp .env.example .env
+```
 
 | Variable | Purpose | Default |
 |----------|---------|---------|
-| `SECRET_KEY` | Flask session key | random dev key (**set in production**) |
+| `SECRET_KEY` | Flask session signing key (use a long random string) | dev fallback |
 | `DATABASE` | Path to the SQLite database file | `blog.db` |
 | `ADMIN_USERNAME` | Admin account username | `admin` |
-| `ADMIN_PASSWORD` | Admin account password | if empty, a random one is generated and printed at first run |
+| `ADMIN_PASSWORD` | Admin account password | if empty, a random one is generated and printed on first boot |
+
+`.env` is read automatically by Flask (via `python-dotenv`) and is **never**
+committed to version control.
 
 ## Running
 
 ```bash
-flask run
+flask --app app run --host 0.0.0.0 --port 8000
 ```
 
-- Public site: http://localhost:5000/
-- Admin login: http://localhost:5000/login
-  - Log in with the **admin username/password** (from env, or the generated password shown on the first boot).
-  - After logging in, manage articles at `/admin/articles` and comments at `/admin/comments`.
+- **Site:** http://localhost:8000
+- **Admin login:** http://localhost:8000/login
 
-On first startup the database schema is created automatically and two sample articles are seeded. Use `reset_and_seed()` from `database.py` to re-seed sample content:
+Log in with the `ADMIN_USERNAME` / `ADMIN_PASSWORD` from your `.env` (or the
+generated password shown on the first boot), then manage articles at
+`/admin/articles` and comments at `/admin/comments`.
+
+The database schema is created automatically on first startup.
+
+## Seeding Content
+
+The repository ships two idempotent seeding scripts:
 
 ```bash
-python -c "from database import reset_and_seed; reset_and_seed('blog.db')"
+# Starter set — 8 well-written technical posts (rebuilds blog.db)
+python scripts/seed_professional.py
+
+# A second batch — 7 more posts (merges into the existing DB, skips duplicates)
+python scripts/seed_extra.py
 ```
 
-## Bulk-importing articles (JSON)
+Anything you author in the admin dashboard is persisted to `blog.db` and will not
+be overwritten by these scripts (the professional seed intentionally replaces the
+database; the **extra** seed only adds).
 
-POST an authenticated request to `/admin/import_json` with a JSON array of objects `{ "title", "content", "tags", "excerpt" }`:
+## Managing Content
+
+| Action | How |
+|--------|-----|
+| Write a post | Log in → **Articles → New article** (Markdown + live preview) |
+| Edit / delete | Dashboard → **Articles**, then Edit/Delete |
+| Moderate comments | Dashboard → **Comments** (approve / reject / delete) |
+
+## JSON Import
+
+Bulk-import a JSON list of articles via an authenticated request to
+`/admin/import_json`:
 
 ```bash
-curl -X POST http://localhost:5000/admin/import_json \
+curl -X POST http://localhost:8000/admin/import_json \
   -H "Content-Type: application/json" \
   -b <session-cookie> \
-  -d '[{"title":"My Post","content":"# Heading\nbody text","tags":"python,web"}]'
+  -d '[{"title":"My Post","content":"# Heading\\nbody","tags":"python,web","excerpt":"…"}]'
 ```
 
-## Project layout
+Each object requires `title` and `content`; `tags` may be a comma-separated string
+or a list.
+
+## Project Layout
 
 ```
-app.py            Flask app factory + entry point
-config.py         configuration (env-driven)
-database.py       schema, connection helpers, seed
-models.py         data-access layer (articles, tags, comments, users, search)
-render.py         safe Markdown → HTML (bleach allowlist)
-auth.py           login/logout, admin seeding, CSRF/helper injection
+app.py            App factory + entry point
+config.py         Env-driven configuration
+database.py       Schema, connection helpers, reset/seed
+models.py         Data-access layer (articles, tags, comments, users, search)
+render.py         Safe Markdown → HTML (bleach allowlist)
+auth.py           Login/logout, admin seeding, CSRF/injection
 csrf.py           CSRF token generation & validation
 slug.py           URL slug helper
-blueprints/       public, comments, admin, api
-static/css        style.css  (design system)
-static/js         main.js
-templates/        Jinja2 templates (public + admin)
+blueprints/       public · comments · admin · api
+scripts/          seed_professional.py · seed_extra.py
+static/           css/style.css · js/main.js
+templates/        Jinja2 templates (public + admin) + _header.html partial
 tests/            pytest suite
 ```
 
@@ -86,12 +164,21 @@ tests/            pytest suite
 pytest
 ```
 
-Tests run against a temporary SQLite database per-test and never touch `blog.db`.
+The suite runs against a temporary SQLite database per test and never touches
+`blog.db`. It covers the schema, the data layer, routing (public/admin), search,
+tag filtering, comment moderation, authentication/CSRF, and Markdown sanitization.
 
 ## Security
 
-- Parameterized SQL (SQLAlchemy-free, raw `sqlite3`) throughout.
-- Passwords hashed with Werkzeug (`pbkdf2:sha256`).
-- CSRF tokens on every POST form; the admin API rejects missing tokens.
-- Markdown sanitized; comment content escaped; `javascript:` and dangerous protocols stripped.
-- Admin routes protected; anonymous visitors don't see the admin link.
+- **Parameterized SQL** throughout (raw `sqlite3`, never string-interpolated input).
+- **Password hashing** with Werkzeug (`pbkdf2:sha256`) — passwords are never stored
+  or logged in plaintext.
+- **CSRF protection** on every POST form; the admin API rejects missing tokens.
+- **Markdown sanitization** — rendered content is filtered against an allowlist and
+  dangerous protocols (`javascript:` etc.) are stripped.
+- **Escaped comment content**, safe URL handling, and a hard session secret.
+- **Admin routes** are login-protected; anonymous visitors don't see the admin link.
+
+---
+
+Built with SQLite, Flask, and purpose. Crafted as a developer's reading notebook.
