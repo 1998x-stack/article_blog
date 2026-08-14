@@ -12,7 +12,24 @@
   </header>
 
   <main class="container">
-    <h1>Articles</h1>
+    {% if page == 1 %}
+      {% set lead = articles[0] if articles else None %}
+      {% if lead %}
+      <section class="hero">
+        <p class="hero-eyebrow">Latest entry</p>
+        <h2 class="hero-title"><a href="{{ url_for('public.article', slug=lead['slug']) }}">{{ lead['title'] }}</a></h2>
+        {% if lead['excerpt'] %}<p class="hero-excerpt">{{ lead['excerpt'] }}</p>{% endif %}
+        <nav class="tag-chips">
+          {% for t in tags %}
+            <a class="tag-chip" href="{{ url_for('public.tag', name=t['name']) }}">{{ t['name'] }}</a>
+          {% endfor %}
+        </nav>
+        <a class="hero-link" href="{{ url_for('public.article', slug=lead['slug']) }}">Read entry</a>
+      </section>
+      {% endif %}
+    {% endif %}
+
+    <h1>{% if page > 1 %}Archive{% else %}Entries{% endif %}</h1>
 
     <nav class="tag-chips">
       {% for t in tags %}
@@ -27,10 +44,13 @@
 
     <div class="article-container {{ view_type }}">
       {% for a in articles %}
+        {% if not (page == 1 and loop.first) %}
         <div class="article-card">
+          <p class="card-meta"><b>{{ a['created_at'][:10] }}</b></p>
           <h2 class="article-title"><a href="{{ url_for('public.article', slug=a['slug']) }}">{{ a['title'] }}</a></h2>
           {% if a['excerpt'] %}<p class="article-excerpt">{{ a['excerpt'] }}</p>{% endif %}
         </div>
+        {% endif %}
       {% else %}
         <p>No articles yet.</p>
       {% endfor %}

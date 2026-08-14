@@ -25,7 +25,9 @@
       <h2>Comments ({{ comments|length }})</h2>
       <ul class="comment-list">
         {% for c in comments %}
-          <li class="comment"><strong>{{ c['author'] }}</strong> — {{ c['content'] }}</li>
+          <li class="comment"><strong>{{ c['author'] }}</strong><span>{{ c['content'] }}</span>
+            {% if c['created_at'] %}<time>{{ c['created_at'][:10] }}</time>{% endif %}
+          </li>
         {% else %}
           <li>No comments yet.</li>
         {% endfor %}
