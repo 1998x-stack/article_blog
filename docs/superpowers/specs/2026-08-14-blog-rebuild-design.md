@@ -24,8 +24,8 @@ article_blog/
 ├── markdown.py                 # safe Markdown → HTML rendering
 ├── blueprints/
 │   ├── public.py               # index, article view, search, tag pages
-│   ├── comments.py             # post comment, moderation actions
-│   ├── admin.py                # dashboard, article CRUD, comment management
+│   ├── comments.py             # public comment submission
+│   ├── admin.py                # dashboard, article CRUD, comment moderation
 │   └── api.py                  # JSON import endpoint (improved)
 ├── templates/                  # base, public, admin layouts
 ├── static/                     # CSS design system, JS
@@ -90,7 +90,7 @@ Supporting details:
 **Design:** bold, distinctive, developer-oriented. Strong opinionated typography (display/mono accent + clean sans), vivid accent palette with dark hero/header, strong contrast, cards with personality and clear hierarchy, responsive, accessible.
 
 Pages:
-- **Home** — featured + paginated article grid/list, tag filter chips, polished pagination with page numbers and correct next/last behavior.
+- **Home** — paginated article grid/list (most recent first), tag filter chips, polished pagination with page numbers and correct next/last behavior.
 - **Article page** — rendered Markdown (styled code blocks, links, images, blockquotes, tables), meta (date, tags → clickable), comments section.
 - **Search** — FTS results with match highlighting.
 - **Tag pages** — all articles for a tag.
@@ -99,7 +99,7 @@ Markdown rendered server-side with a **safe allowlist** (headings, paragraphs, c
 
 ## 5. Admin Area & Auth
 
-- Single admin account seeded on first run (credentials via env).
+- Single admin account seeded on first run. Credentials from env (`ADMIN_USERNAME`, `ADMIN_PASSWORD`); if absent, a random password is generated and printed to console/logs on first run.
 - Session auth, hashed password, CSRF protection on all forms.
 - `require_admin` decorator on all admin routes.
 - **Dashboard**: overview counts (articles, pending comments), recent articles.
